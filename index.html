@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+
+  <table border="1" style="width: 50%; margin: auto; text-align: center;">
+    <thead>
+      <tr><th>Category</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Alpha (A5 + A20)</td><td id="alpha"></td></tr>
+      <tr><td>Beta (A15 / A7)</td><td id="beta"></td></tr>
+      <tr><td>Charlie (A13 * A12)</td><td id="charlie"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Load PapaParse library -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script>
+    fetch('Table_Input.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const parsed = Papa.parse(csv, { header: true });
+        const data = parsed.data;
+
+        const values = {};
+        data.forEach(row => {
+          if (row['Index #'] && row['Value']) {
+            values[row['Index #'].trim()] = parseInt(row['Value'].trim());
+          }
+        });
+
+        // Extract needed values
+        const A5 = values['A5'] || 0;
+        const A20 = values['A20'] || 0;
+        const A15 = values['A15'] || 0;
+        const A7 = values['A7'] || 1; 
+        const A13 = values['A13'] || 0;
+        const A12 = values['A12'] || 0;
+
+        // Computed values
+        document.getElementById('alpha').textContent = A5 + A20;
+        document.getElementById('beta').textContent = Math.floor(A15 / A7);
+        document.getElementById('charlie').textContent = A13 * A12;
+      });
+  </script>
+</body>
+</html>
